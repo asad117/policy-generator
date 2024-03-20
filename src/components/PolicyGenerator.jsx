@@ -1,306 +1,5 @@
-// import React, { useState } from "react";
-// import { Container, Row, Col, Button, Form } from "react-bootstrap";
 
-// function PolicyGenerator() {
-//   const [formData, setFormData] = useState({
-//     AC: {
-//       temperature: {
-//         fan_speed: "",
-//         swing: "",
-//         rules: [],
-//       },
-//     },
-//   });
-
-//   const handleInputChange = (device, type, field, value) => {
-//     setFormData((prevState) => ({
-//       ...prevState,
-//       [device]: {
-//         ...prevState[device],
-//         [type]: {
-//           ...prevState[device][type],
-//           [field]: value,
-//         },
-//       },
-//     }));
-//   };
-
-//   const addRule = () => {
-//     const newRule = {
-//       outside_min: "",
-//       outside_max: "",
-//       sub_rules: [],
-//     };
-//     setFormData((prevState) => ({
-//       ...prevState,
-//       AC: {
-//         ...prevState.AC,
-//         temperature: {
-//           ...prevState.AC.temperature,
-//           rules: [...prevState.AC.temperature.rules, newRule],
-//         },
-//       },
-//     }));
-//   };
-
-//   const addSubRule = (ruleIndex) => {
-//     const newSubRule = {
-//       inside_min: -40,
-//       inside_max: "",
-//       morning: "",
-//       afternoon: "",
-//       evening: "",
-//       night: "",
-//       mode: "",
-//     };
-//     setFormData((prevState) => ({
-//       ...prevState,
-//       AC: {
-//         ...prevState.AC,
-//         temperature: {
-//           ...prevState.AC.temperature,
-//           rules: prevState.AC.temperature.rules.map((rule, index) => {
-//             if (index === ruleIndex) {
-//               return {
-//                 ...rule,
-//                 sub_rules: [...(rule.sub_rules || []), newSubRule],
-//               };
-//             }
-//             return rule;
-//           }),
-//         },
-//       },
-//     }));
-//   };
-
-//   const generateJSON = () => {
-//     console.log(JSON.stringify(formData, null, 2));
-//     // Further processing with formData as needed
-//   };
-
-//   return  (
-//     <Container>
-//       <h1>AC</h1>
-//       <h3>Temperature</h3>
-//       <Row className="mb-3">
-//         <Col>
-//           <Form.Group controlId="fanSpeed">
-//             <Form.Label>Fan Speed:</Form.Label>
-//             <Form.Control
-//               as="select"
-//               value={formData.AC.temperature.fan_speed}
-//               onChange={(e) =>
-//                 handleInputChange("AC", "temperature", "fan_speed", e.target.value)
-//               }
-//             >
-//               <option value="">Select Fan Speed</option>
-//               <option value="Low">Low</option>
-//               <option value="Medium">Medium</option>
-//               <option value="High">High</option>
-//             </Form.Control>
-//           </Form.Group>
-//         </Col>
-//         <Col>
-//           <Form.Group controlId="swing">
-//             <Form.Label>Swing:</Form.Label>
-//             <Form.Control
-//               as="select"
-//               value={formData.AC.temperature.swing}
-//               onChange={(e) =>
-//                 handleInputChange("AC", "temperature", "swing", e.target.value)
-//               }
-//             >
-//               <option value="">Select Swing</option>
-//               <option value="On">On</option>
-//               <option value="Off">Off</option>
-//             </Form.Control>
-//           </Form.Group>
-//         </Col>
-//       </Row>
-
-//       {formData.AC.temperature.rules.map((rule, index) => (
-//         <div key={index}>
-//           <h4>Rule {index + 1}</h4>
-//           <Form.Group controlId={`outsideMin-${index}`}>
-//             <Form.Label>Outside Min:</Form.Label>
-//             <Form.Control
-//               type="number"
-//               value={rule.outside_min}
-//               onChange={(e) =>
-//                 handleInputChange("AC", "temperature", "rules", {
-//                   ...rule,
-//                   outside_min: e.target.value,
-//                 })
-//               }
-//             />
-//           </Form.Group>
-//           <Form.Group controlId={`outsideMax-${index}`}>
-//             <Form.Label>Outside Max:</Form.Label>
-//             <Form.Control
-//               type="number"
-//               value={rule.outside_max}
-//               onChange={(e) =>
-//                 handleInputChange("AC", "temperature", "rules", {
-//                   ...rule,
-//                   outside_max: e.target.value,
-//                 })
-//               }
-//             />
-//           </Form.Group>
-//           <Button variant="primary" onClick={() => addSubRule(index)}>
-//             Add Sub Rule
-//           </Button>
-//           {rule.sub_rules &&
-//             rule.sub_rules.map((subRule, subIndex) => (
-//               <div key={subIndex}>
-//                 <h5>Sub Rule {subIndex + 1}</h5>
-//                 <Form.Group controlId={`insideMin-${subIndex}`}>
-//                   <Form.Label>Inside Min:</Form.Label>
-//                   <Form.Control
-//                     type="number"
-//                     value={subRule.inside_min}
-//                     onChange={(e) =>
-//                       handleInputChange("AC", "temperature", "rules", {
-//                         ...rule,
-//                         sub_rules: rule.sub_rules.map((s, i) =>
-//                           i === subIndex
-//                             ? { ...s, inside_min: e.target.value }
-//                             : s
-//                         ),
-//                       })
-//                     }
-//                   />
-//                 </Form.Group>
-//                 <Form.Group controlId={`insideMax-${subIndex}`}>
-//                   <Form.Label>Inside Max</Form.Label>
-//                   <Form.Control
-//                     type="number"
-//                     value={subRule.inside_max}
-//                     onChange={(e) =>
-//                       handleInputChange("AC", "temperature", "rules", {
-//                         ...rule,
-//                         sub_rules: rule.sub_rules.map((s, i) =>
-//                           i === subIndex
-//                             ? { ...s, inside_max: e.target.value }
-//                             : s
-//                         ),
-//                       })
-//                     }
-//                   />
-//                 </Form.Group>
-//                 <Form.Group controlId={`morning-${subIndex}`}>
-//                   <Form.Label>Morning:</Form.Label>
-//                   <Form.Control
-//                     type="number"
-//                     value={subRule.morning}
-//                     onChange={(e) =>
-//                       handleInputChange("AC", "temperature", "rules", {
-//                         ...rule,
-//                         sub_rules: rule.sub_rules.map((s, i) =>
-//                           i === subIndex
-//                             ? { ...s, morning: e.target.value }
-//                             : s
-//                         ),
-//                       })
-//                     }
-//                   />
-//                 </Form.Group>
-
-//                 <Form.Group controlId={`morning-${subIndex}`}>
-//                   <Form.Label>Afternoon:</Form.Label>
-//                   <Form.Control
-//                     type="number"
-//                     value={subRule.afternoon}
-//                     onChange={(e) =>
-//                       handleInputChange("AC", "temperature", "rules", {
-//                         ...rule,
-//                         sub_rules: rule.sub_rules.map((s, i) =>
-//                           i === subIndex
-//                             ? { ...s, afternoon: e.target.value }
-//                             : s
-//                         ),
-//                       })
-//                     }
-//                   />
-//                 </Form.Group>
-
-//                 <Form.Group controlId={`morning-${subIndex}`}>
-//                   <Form.Label>Evening:</Form.Label>
-//                   <Form.Control
-//                     type="number"
-//                     value={subRule.evening}
-//                     onChange={(e) =>
-//                       handleInputChange("AC", "temperature", "rules", {
-//                         ...rule,
-//                         sub_rules: rule.sub_rules.map((s, i) =>
-//                           i === subIndex
-//                             ? { ...s, evening: e.target.value }
-//                             : s
-//                         ),
-//                       })
-//                     }
-//                   />
-//                 </Form.Group>
-
-//                 <Form.Group controlId={`morning-${subIndex}`}>
-//                   <Form.Label>Night:</Form.Label>
-//                   <Form.Control
-//                     type="number"
-//                     value={subRule.night}
-//                     onChange={(e) =>
-//                       handleInputChange("AC", "temperature", "rules", {
-//                         ...rule,
-//                         sub_rules: rule.sub_rules.map((s, i) =>
-//                           i === subIndex
-//                             ? { ...s, night: e.target.value }
-//                             : s
-//                         ),
-//                       })
-//                     }
-//                   />
-//                 </Form.Group>
-//                 <Form.Group controlId={`mode-${subIndex}`}>
-//                   <Form.Label>Mode:</Form.Label>
-//                   <Form.Control
-//                     as="select"
-//                     value={subRule.mode}
-//                     onChange={(e) =>
-//                       handleInputChange("AC", "temperature", "rules", {
-//                         ...rule,
-//                         sub_rules: rule.sub_rules.map((s, i) =>
-//                           i === subIndex
-//                             ? { ...s, mode: e.target.value }
-//                             : s
-//                         ),
-//                       })
-//                     }
-//                   >
-//                     <option value="">Select Mode</option>
-//                     <option value="Heat">Heat</option>
-//                     <option value="Cold">Cold</option>
-//                     <option value="Normal">Normal</option>
-//                   </Form.Control>
-//                 </Form.Group>
-//               </div>
-//             ))}
-//         </div>
-//       ))}
-
-//       <Button variant="primary" onClick={addRule}>
-//         Add Rule
-//       </Button>
-
-//       <Button variant="primary" onClick={generateJSON}>
-//         Generate JSON
-//       </Button>
-//     </Container>
-
-//   );
-// }
-
-// export default PolicyGenerator;
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Row,
   Col,
@@ -312,12 +11,152 @@ import {
   Space,
   Card,
   Modal,
-  message
+  message,
 } from "antd";
-import copy from 'copy-to-clipboard';
+import copy from "copy-to-clipboard";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { CloseOutlined } from "@ant-design/icons";
+
 const { Option } = Select;
+
+
+const defaultFormData = {
+  "climate_type": "sub_tropical",
+  "season": "summer",
+  "type": "cooling",
+  "occupancy": "occupied",
+  "ac_temperature_fan_speed": "low",
+  "ac_temperature_swing": "ON",
+  "ac_temperature_rules": [
+      {
+          "outside_min": -40,
+          "outside_max": -6,
+          "sub_rules": [
+              {
+                  "inside_min": 2,
+                  "inside_max": "2",
+                  "morning": "5",
+                  "afternoon": "9",
+                  "evening": "12",
+                  "night": "OFF",
+                  "mode": "dry"
+              }
+          ]
+      },
+      {
+          "outside_min": -6,
+          "outside_max": 4
+      },
+      {
+          "outside_min": 4,
+          "outside_max": 15
+      },
+      {
+          "outside_min": 15,
+          "outside_max": 20
+      },
+      {
+          "outside_min": 20,
+          "outside_max": 25
+      },
+      {
+          "outside_min": 25,
+          "outside_max": 31
+      },
+      {
+          "outside_min": 31,
+          "outside_max": 50
+      }
+  ],
+  "humidity_ducted_fan_speed": "medium",
+  "humidity_ducted_swing": "OFF",
+  "humidity_ducted_rules": [
+      {
+          "outside_min": 0,
+          "outside_max": 60
+      },
+      {
+          "outside_min": 60,
+          "outside_max": 70
+      },
+      {
+          "outside_min": 70,
+          "outside_max": 90
+      },
+      {
+          "outside_min": 90,
+          "outside_max": 100
+      }
+  ],
+  "fan_coil_fan_speed": "medium",
+  "fan_coil_swing": "OFF",
+  "fan_coil_rules": [
+      {
+          "outside_min": 0,
+          "outside_max": 60
+      },
+      {
+          "outside_min": 60,
+          "outside_max": 70
+      },
+      {
+          "outside_min": 70,
+          "outside_max": 90
+      },
+      {
+          "outside_min": 90,
+          "outside_max": 100
+      },
+      {}
+  ],
+  "radiator_temperature_rules": [
+      {
+          "outside_min": -40,
+          "outside_max": -20
+      },
+      {
+          "outside_min": -20,
+          "outside_max": -15
+      },
+      {
+          "outside_min": -15,
+          "outside_max": -10
+      },
+      {
+          "outside_min": -10,
+          "outside_max": -5
+      },
+      {
+          "outside_min": -5,
+          "outside_max": 0
+      },
+      {
+          "outside_min": 0,
+          "outside_max": 4
+      },
+      {
+          "outside_min": 1,
+          "outside_max": 4
+      },
+      {
+          "outside_min": 4,
+          "outside_max": 9
+      },
+      {
+          "outside_min": 9,
+          "outside_max": 14
+      },
+      {
+          "outside_min": 14,
+          "outside_max": 19
+      },
+      {
+          "outside_min": 19,
+          "outside_max": 50
+      }
+  ]
+}
+
 
 function PolicyGenerator() {
   const [form] = Form.useForm();
@@ -330,64 +169,88 @@ function PolicyGenerator() {
     },
   };
 
-  //   function convertRules(inputArray,name) {
-  //     let output = { [name]: {} };
-  //     inputArray.forEach((rule, ruleIndex) => {
-  //         let temperatureRule = {};
-  //         temperatureRule[`rule${ruleIndex + 1}`] = {
-  //             outside_min: rule.outside_min,
-  //             outside_max: rule.outside_max
-  //         };
+  const [initialFormData,setInitialFormData] = useState(defaultFormData)
 
-  //         if (rule.sub_rules) {
-  //             rule.sub_rules.forEach((subRule, subRuleIndex) => {
-  //                 let subRuleKey = `sub_rule${subRuleIndex + 1}`;
-  //                 temperatureRule[`rule${ruleIndex + 1}`][subRuleKey] = {
-  //                     inside_min: subRule.inside_min,
-  //                     inside_max: subRule.inside_max,
-  //                     morning: subRule.morning,
-  //                     afternoon: subRule.afternoon,
-  //                     evening: subRule.evening,
-  //                     night: subRule.night,
-  //                     mode: subRule.mode
-  //                 };
-  //             });
-  //         }
-  //         Object.assign(output.temperature, temperatureRule);
+  const ACTemperaturePrefilled = [
+    { outside_min: -40, outside_max: -6 },
+    { outside_min: -6, outside_max: 4 },
+    { outside_min: 4, outside_max: 15 },
+    { outside_min: 15, outside_max: 20 },
+    { outside_min: 20, outside_max: 25 },
+    { outside_min: 25, outside_max: 31 },
+    { outside_min: 31, outside_max: 50 },
+  ];
+
+  const dayTemOptions = {
+    // ON:"ON",
+    OFF:"OFF",
+    5:5,
+    6:6,
+    7:7,
+    8:8,
+    9:9,
+    10:10,
+    11:11,
+    12:12,
+    13:13,
+    14:14,
+    15:15,
+    16:16,
+    17:17,
+    18:18,
+    19:19,
+    20:20,
+    21:21,
+    22:22,
+    23:23,
+    24:24,
+    25:25,
+    26:26,
+    27:27,
+  }
+
+  const optionsArray = Object.keys(dayTemOptions).map(key => ({
+    value: key,
+    label: dayTemOptions[key]
+  }));
+
+  const ACHumidityPrefilledRules = [
+    { outside_min: 0, outside_max: 60 },
+    { outside_min: 60, outside_max:70 },
+    { outside_min: 70, outside_max: 90 },
+    { outside_min: 90, outside_max: 100 },
+  ];
+
+  const radiatorTemperaturePrefilledRules = [
+    { outside_min: -40, outside_max: -20 },
+    { outside_min: -20, outside_max: -15 },
+    { outside_min: -15, outside_max: -10 },
+    { outside_min: -10, outside_max: -5 },
+    { outside_min: -5, outside_max: 0 },
+    { outside_min: 0, outside_max: 4 },
+    { outside_min: 1, outside_max: 4 },  //what should be minimum temperature
+    { outside_min: 4, outside_max: 9 },
+    { outside_min: 9, outside_max: 14 },
+    { outside_min: 14, outside_max: 19 },
+    { outside_min: 19, outside_max: 50 },
+
+
+  ];
+
+  
+
+  // const [initialFields, setInitialFields] = useState([]);
+  // useEffect(() => {
+  //   const initialFieldsData = [];
+  //   for (let i = 0; i < 4; i++) {
+  //     initialFieldsData.push({
+  //       outside_min: ACTemperaturePrefilled[i].outside_min,
+  //       outside_max: ACTemperaturePrefilled[i].outside_max,
+  //       // sub_rules: [],
   //     });
-  //     return output;
-  // }
-  //   const onFinish = (value) => {
-  //     let ACTemperature = convertRules(value.ac_temperature_rules,'temperature')
-  //     ACTemperature.temperature['ac_temperature_fan_speed'] = value.ac_temperature_fan_speed
-  //     ACTemperature.temperature['ac_temperature_swing'] = value.ac_temperature_swing
-
-  //     let ACHumidityDucted = convertRules((value.humidity_ducted_rules ?value.humidity_ducted_rules :[] ),'ducted')
-  //     ACHumidityDucted.ducted['humidity_ducted_fan_speed'] = value.humidity_ducted_fan_speed
-  //     ACHumidityDucted.ducted['humidity_ducted_swing'] = value.humidity_ducted_swing
-
-  //     let ACHumidityFanCoils = convertRules((value.fan_coil_rules ?value.humidity_ducted_rules :[] ),'fan_coil')
-  //     ACHumidityFanCoils.fan_coil['fan_coil_fan_speed'] = value.fan_coil_fan_speed
-  //     ACHumidityFanCoils.fan_coil['fan_coil_swing'] = value.fan_coil_swing
-  //     let radiatorTemperature = {}
-  //     if("radiator_temperature_rules" in value){
-  //          radiatorTemperature = convertRules(value.radiator_temperature_rules,'temperature')
-
-  //     }
-  //     let finalJSON = {
-  //         AC:{
-  //             temperature:ACTemperature.temperature,
-  //             humidity:{
-  //                 ducted:ACHumidityDucted.ducted,
-  //                 fan_coil:ACHumidityFanCoils.fan_coil
-  //             }
-  //         },
-  //         radiator:{
-  //             temperature:radiatorTemperature.temperature
-  //         }
-  //     }
-  //     console.log("final josn",finalJSON)
-  //   };
+  //   }
+  //   setInitialFields(initialFieldsData);
+  // }, []);
 
   function convertRules(inputArray = [], name = "") {
     if (!Array.isArray(inputArray) || !name || typeof name !== "string") {
@@ -427,6 +290,7 @@ function PolicyGenerator() {
   }
 
   const onFinish = (value) => {
+    console.log("value",value)
     try {
       const ACTemperature = convertRules(
         value.ac_temperature_rules,
@@ -472,42 +336,135 @@ function PolicyGenerator() {
 
       const copyJSONToClipboard = () => {
         copy(JSON.stringify(finalJSON, null, 2));
-        message.success('JSON copied to clipboard');
-    };
+        message.success("JSON copied to clipboard");
+      };
+      let fileName = `${value.climate_type}_${value.season}_${value.type}_${value.occupancy}`
 
       Modal.info({
-        title: 'Final JSON Result',
+        title: `Final JSON Result ${value.climate_type}_${value.season}_${value.type}_${value.occupancy}` ,
         content: (
-            <div>
-                <pre style={{ maxHeight: '60vh', overflow: 'auto' }}>
-                    {JSON.stringify(finalJSON, null, 2)}
-                </pre>
-                <Button onClick={copyJSONToClipboard} style={{ marginTop: '10px' }}>
-                    Copy JSON
-                </Button>
-            </div>
+          <div>
+            <pre style={{ maxHeight: "60vh", overflow: "auto" }}>
+             {JSON.stringify(finalJSON, null, 2)}
+            </pre>
+            <Button onClick={copyJSONToClipboard} style={{ marginTop: "10px" }}>
+              Copy JSON
+            </Button>
+
+            <Button onClick={()=>downloadJson(finalJSON,fileName)} style={{ marginTop: "10px" ,marginLeft:"10px"}}>
+              Download JSON
+            </Button>
+          </div>
         ),
-        width: 800, 
+        width: 800,
         maskClosable: true,
-        okText: 'Close'
-    });
+        okText: "Close",
+      });
       console.log("final json", finalJSON);
     } catch (error) {
       console.error("Error occurred:", error.message);
     }
   };
 
+  const downloadJson = (json,fileName) => {
+    const jsonString = JSON.stringify(json);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `${fileName}.json`);
+    document.body.appendChild(link);
+    link.click();
+    URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+  };
+
   return (
-    <div style={{ padding: "25px" }}>
+    <div style={{ padding: "150px" ,}}>
+      {/* <div className="reset-button" style={{ duisplay: "flex", alignItems:'end', justifyContent:"right"}}>
+      <Button onClick={()=>setInitialFormData()} type="primary" danger ghost>
+      Reset
+    </Button>
+      </div> */}
+
       <Form
+        initialValues={initialFormData}
         labelCol={{ span: 4 }}
-        wrapperCol={{ span: 18 }}
+        // wrapperCol={{ span: 18 }}
         onFinish={onFinish}
         layout="vertical"
         // {...layout}
         //   layout="horizontal"
         //   style={{ maxWidth: 1000 }}
       >
+        <Form.Item
+          name="climate_type"
+          label="Climate Type"
+          rules={[
+            {
+              required: true,
+              message: "Please select Climate type!",
+            },
+          ]}
+        >
+          <Select placeholder="select the Climate type">
+            <Option value="polar_sub_polar">Polar -Sub Polar</Option>
+            <Option value="temperature">Temperature</Option>
+            <Option value="sub_tropical">Sub Tropical</Option>
+            <Option value="tropical">Tropical</Option>
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          name="season"
+          label="Season"
+          rules={[
+            {
+              required: true,
+              message: "Please select season!",
+            },
+          ]}
+        >
+          <Select placeholder="select the Season">
+            <Option value="spring">Spring</Option>
+            <Option value="summer">Summer</Option>
+            <Option value="autumn">Autumn</Option>
+            <Option value="winter">Winter</Option>
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          name="type"
+          label="Type"
+          rules={[
+            {
+              required: true,
+              message: "Please select the type!",
+            },
+          ]}
+        >
+          <Select placeholder="select the type">
+            <Option value="cooling">Cooling</Option>
+            <Option value="heating">Heating</Option>
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          name="occupancy"
+          label="Occupancy"
+          rules={[
+            {
+              required: true,
+              message: "Please select the Occupancy!",
+            },
+          ]}
+        >
+          <Select placeholder="select the type">
+            <Option value="occupied">Occupied</Option>
+            <Option value="unoccupied">Unoccupied</Option>
+          </Select>
+        </Form.Item>
+
         <div className="ac-maain-container">
           <h1>AC</h1>
           <div className="temprature-section">
@@ -539,110 +496,163 @@ function PolicyGenerator() {
               ]}
             >
               <Select placeholder="select your Mode">
-                <Option value="on">On</Option>
-                <Option value="off">Off</Option>
+                <Option value="ON">ON</Option>
+                <Option value="OFF">OFF</Option>
               </Select>
             </Form.Item>
-            <Form.List name="ac_temperature_rules">
-              {(fields, { add, remove }) => (
-                <div
-                  style={{
-                    display: "flex",
-                    rowGap: 16,
-                    flexDirection: "column",
-                  }}
-                >
-                  {fields.map((field) => (
-                    <Card
-                      size="large"
-                      title={`Rule ${field.name + 1}`}
-                      key={field.key}
-                      extra={
-                        <CloseOutlined
-                          onClick={() => {
-                            remove(field.name);
-                          }}
-                        />
-                      }
-                    >
-                      <Form.Item
-                        label="Outside Min:"
-                        name={[field.name, "outside_min"]}
+            <Form.List
+              name="ac_temperature_rules"
+              initialValue={ACTemperaturePrefilled}
+            >
+              {(fields, { add, remove }) => {
+                return (
+                  <div
+                    style={{
+                      display: "flex",
+                      rowGap: 16,
+                      flexDirection: "column",
+                    }}
+                  >
+                    {fields.map((field) => (
+                      <Card
+                        size="large"
+                        title={`Rule ${field.name + 1}`}
+                        key={field.key}
+                        // extra={
+                        //   <CloseOutlined
+                        //     onClick={() => {
+                        //       remove(field.name);
+                        //     }}
+                        //   />
+                        // }
                       >
-                        <Input />
-                      </Form.Item>
-                      <Form.Item
-                        label="Outside Max:"
-                        name={[field.name, "outside_max"]}
-                      >
-                        <Input />
-                      </Form.Item>
+                        <Form.Item
+                          label="Outside Min:"
+                          name={[field.name, "outside_min"]}
+                        >
+                          <Input disabled />
+                        </Form.Item>
+                        <Form.Item
+                          label="Outside Max:"
+                          name={[field.name, "outside_max"]}
+                        >
+                          <Input disabled />
+                        </Form.Item>
 
-                      {/* Nest Form.List */}
-                      <Form.Item label="Sub Rules">
-                        <Form.List name={[field.name, "sub_rules"]}>
-                          {(subFields, subOpt) => (
-                            <div
-                              style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                rowGap: 16,
-                                flexGrow: 1,
-                              }}
-                            >
-                              {subFields.map((subField) => (
-                                <Space key={subField.key}>
-                                  <Form.Item
-                                    name={[subField.name, "inside_min"]}
-                                    label ="Inside Min"
-                                  >
-                                    <InputNumber placeholder="inside_min" />
-                                  </Form.Item>
-                                  <Form.Item
-                                    label ="Inside Max"
-                                    name={[subField.name, "inside_max"]}
-                                  >
-                                    <Input placeholder="inside_max" />
-                                  </Form.Item>
-                                  <Form.Item
-                                    label ="Morning"
-                                    name={[subField.name, "morning"]}
-                                  >
-                                    <InputNumber placeholder="morning" />
-                                  </Form.Item>
-                                  <Form.Item
-                                    label ="Afternoon"
-                                    name={[subField.name, "afternoon"]}
-                                  >
-                                    <InputNumber placeholder="afternoon" />
-                                  </Form.Item>
-                                  <Form.Item
-                                    label ="Evening"
-                                    
-                                    name={[subField.name, "evening"]}
-                                  >
-                                    <Input placeholder="evening" />
-                                  </Form.Item>
+                        {/* Nest Form.List */}
+                        <Form.Item label="Sub Rules">
+                          <Form.List name={[field.name, "sub_rules"]}>
+                            {(subFields, subOpt) => (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  rowGap: 16,
+                                  flexGrow: 1,
+                                }}
+                              >
+                                {subFields.map((subField) => (
+                                  <Space key={subField.key}>
+                                    <Form.Item
+                                      name={[subField.name, "inside_min"]}
+                                      label="Inside Min"
+                                    >
+                                      <InputNumber placeholder="inside_min" />
+                                    </Form.Item>
+                                    <Form.Item
+                                      label="Inside Max"
+                                      name={[subField.name, "inside_max"]}
+                                    >
+                                      <Input placeholder="inside_max" />
+                                    </Form.Item>
+                                    <Form.Item
+                                      name={[subField.name, "morning"]}
+                                      label="Morning"
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please select Mode!",
+                                        },
+                                      ]}
+                                    >
+                                      <Select placeholder="Morning">
+                                      {optionsArray.map((item, index) => (
+                                      <Option key={index} value={item.value}>
+                                        {item.label}
+                                        </Option>
+                                        ))}
+                                      </Select>
+                                    </Form.Item>
+                                    <Form.Item
+                                      name={[subField.name, "afternoon"]}
+                                      label="Afternoon"
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please select Mode!",
+                                        },
+                                      ]}
+                                    >
+                                      <Select placeholder="Afternoon">
+                                      {optionsArray.map((item, index) => (
+                                      <Option key={index} value={item.value}>
+                                        {item.label}
+                                        </Option>
+                                        ))}
+                                      </Select>
+                                    </Form.Item>
 
-                                  <Form.Item
-                                    label ="Night"
-                                    name={[subField.name, "night"]}
-                                  >
-                                    <Input placeholder="night" />
-                                  </Form.Item>
-                                  <Form.Item
-                                    // style={{ margin: "0px" }}
-                                    name={[subField.name, "mode"]}
-                                    label="Mode"
-                                    rules={[
-                                      {
-                                        required: true,
-                                        message: "Please select Mode!",
-                                      },
-                                    ]}
-                                  >
-                                    <Select placeholder="select your Mode">
-                                    <Option value="cool">Cool</Option>
+
+                                    <Form.Item
+                                      name={[subField.name, "evening"]}
+                                      label="Evening"
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please select Mode!",
+                                        },
+                                      ]}
+                                    >
+                                      <Select placeholder="Evening">
+                                      {optionsArray.map((item, index) => (
+                                      <Option key={index} value={item.value}>
+                                        {item.label}
+                                        </Option>
+                                        ))}
+                                      </Select>
+                                    </Form.Item>
+
+                                    <Form.Item
+                                      name={[subField.name, "night"]}
+                                      label="Night"
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please select Mode!",
+                                        },
+                                      ]}
+                                    >
+                                      <Select placeholder="Night">
+                                      {optionsArray.map((item, index) => (
+                                      <Option key={index} value={item.value}>
+                                        {item.label}
+                                        </Option>
+                                        ))}
+                                      </Select>
+                                    </Form.Item>
+                                    <Form.Item
+                                      // style={{ margin: "0px" }}
+                                      name={[subField.name, "mode"]}
+                                      label="Mode"
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please select Mode!",
+                                        },
+                                      ]}
+                                    >
+                                      <Select placeholder="select your Mode">
+                                        <Option value="cool">Cool</Option>
                                         <Option value="dry">Dry</Option>
                                         <Option value="heat">Heat</Option>
                                         <Option value="frost_protection">
@@ -651,35 +661,35 @@ function PolicyGenerator() {
                                         <Option value="avoid_mode">
                                           Avoid Mould
                                         </Option>
-                                    </Select>
-                                  </Form.Item>
+                                      </Select>
+                                    </Form.Item>
 
-                                  <CloseOutlined
-                                    onClick={() => {
-                                      subOpt.remove(subField.name);
-                                    }}
-                                  />
-                                </Space>
-                              ))}
-                              <Button
-                                type="dashed"
-                                onClick={() => subOpt.add()}
-                                block
-                              >
-                                + Add Sub Rule
-                              </Button>
-                            </div>
-                          )}
-                        </Form.List>
-                      </Form.Item>
-                    </Card>
-                  ))}
-
-                  <Button type="dashed" onClick={() => add()} block>
-                    + Add Temperature Rule
-                  </Button>
-                </div>
-              )}
+                                    <CloseOutlined
+                                      onClick={() => {
+                                        subOpt.remove(subField.name);
+                                      }}
+                                    />
+                                  </Space>
+                                ))}
+                                <Button
+                                  type="dashed"
+                                  onClick={() => subOpt.add()}
+                                  block
+                                >
+                                  + Add Sub Rule
+                                </Button>
+                              </div>
+                            )}
+                          </Form.List>
+                        </Form.Item>
+                      </Card>
+                    ))}
+                    {/* <Button type="dashed" onClick={() => add()} block>
+                      + Add Temperature Rule
+                    </Button> */}
+                  </div>
+                );
+              }}
             </Form.List>
           </div>
 
@@ -716,11 +726,11 @@ function PolicyGenerator() {
                 ]}
               >
                 <Select placeholder="select your Mode">
-                  <Option value="on">On</Option>
-                  <Option value="off">Off</Option>
+                  <Option value="ON">ON</Option>
+                  <Option value="OFF">OFF</Option>
                 </Select>
               </Form.Item>
-              <Form.List name="humidity_ducted_rules">
+              <Form.List name="humidity_ducted_rules" initialValue={ACHumidityPrefilledRules}>
                 {(fields, { add, remove }) => (
                   <div
                     style={{
@@ -734,92 +744,152 @@ function PolicyGenerator() {
                         size="small"
                         title={`Rule ${field.name + 1}`}
                         key={field.key}
-                        extra={
-                          <CloseOutlined
-                            onClick={() => {
-                              remove(field.name);
-                            }}
-                          />
-                        }
+                        // extra={
+                        //   <CloseOutlined
+                        //     onClick={() => {
+                        //       remove(field.name);
+                        //     }}
+                        //   />
+                        // }
                       >
                         <Form.Item
                           label="Outside Min:"
                           name={[field.name, "outside_min"]}
                         >
-                          <Input />
+                          <Input disabled/>
                         </Form.Item>
                         <Form.Item
                           label="Outside Max:"
                           name={[field.name, "outside_max"]}
                         >
-                          <Input />
+                          <Input disabled />
                         </Form.Item>
 
                         {/* Nest Form.List */}
                         <Form.Item label="Sub Rules">
-                        <Form.List name={[field.name, "sub_rules"]}>
-                          {(subFields, subOpt) => (
-                            <div
-                              style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                rowGap: 16,
-                                flexGrow: 1,
-                              }}
-                            >
-                              {subFields.map((subField) => (
-                                <Space key={subField.key}>
-                                  <Form.Item
-                                    name={[subField.name, "inside_min"]}
-                                    label ="Inside Min"
-                                  >
-                                    <InputNumber placeholder="inside_min" />
-                                  </Form.Item>
-                                  <Form.Item
-                                    label ="Inside Max"
-                                    name={[subField.name, "inside_max"]}
-                                  >
-                                    <Input placeholder="inside_max" />
-                                  </Form.Item>
-                                  <Form.Item
-                                    label ="Morning"
-                                    name={[subField.name, "morning"]}
-                                  >
-                                    <InputNumber placeholder="morning" />
-                                  </Form.Item>
-                                  <Form.Item
-                                    label ="Afternoon"
-                                    name={[subField.name, "afternoon"]}
-                                  >
-                                    <InputNumber placeholder="afternoon" />
-                                  </Form.Item>
-                                  <Form.Item
-                                    label ="Evening"
-                                    
-                                    name={[subField.name, "evening"]}
-                                  >
-                                    <Input placeholder="evening" />
-                                  </Form.Item>
+                          <Form.List name={[field.name, "sub_rules"]}>
+                            {(subFields, subOpt) => (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  rowGap: 16,
+                                  flexGrow: 1,
+                                }}
+                              >
+                                {subFields.map((subField) => (
+                                  <Space key={subField.key}>
+                                    <Form.Item
+                                      name={[subField.name, "inside_min"]}
+                                      label="Inside Min"
+                                    >
+                                      <InputNumber placeholder="inside_min" />
+                                    </Form.Item>
+                                    <Form.Item
+                                      label="Inside Max"
+                                      name={[subField.name, "inside_max"]}
+                                    >
+                                      <Input placeholder="inside_max" />
+                                    </Form.Item>
 
-                                  <Form.Item
-                                    label ="Night"
-                                    name={[subField.name, "night"]}
-                                  >
-                                    <Input placeholder="night" />
-                                  </Form.Item>
-                                  <Form.Item
-                                    // style={{ margin: "0px" }}
-                                    name={[subField.name, "mode"]}
-                                    label="Mode"
-                                    rules={[
-                                      {
-                                        required: true,
-                                        message: "Please select Mode!",
-                                      },
-                                    ]}
-                                  >
-                                    <Select placeholder="select your Mode">
-                                    <Option value="cool">Cool</Option>
+                                    <Form.Item
+                                      name={[subField.name, "inside_temp_min"]}
+                                      label="Inside Min Temp"
+                                    >
+                                      <InputNumber placeholder="inside_temp_min" />
+                                    </Form.Item>
+                                    <Form.Item
+                                      label="Inside Max Temp"
+                                      name={[subField.name, "inside_temp_max"]}
+                                    >
+                                      <Input placeholder="inside_temp_max" />
+                                    </Form.Item>
+
+                                    <Form.Item
+                                      name={[subField.name, "morning"]}
+                                      label="Morning"
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please select Mode!",
+                                        },
+                                      ]}
+                                    >
+                                      <Select placeholder="Morning">
+                                        <Option value="ON">ON</Option>
+                                        <Option value="OFF">OFF</Option>
+                                      </Select>
+                                    </Form.Item>
+
+                                    {/* <Form.Item
+                                      label="Morning"
+                                      name={[subField.name, "morning"]}
+                                    >
+                                      <InputNumber placeholder="morning" />
+                                    </Form.Item> */}
+
+                                    <Form.Item
+                                      name={[subField.name, "afternoon"]}
+                                      label="Afternoon"
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please select Mode!",
+                                        },
+                                      ]}
+                                    >
+                                      <Select placeholder="Afternoon">
+                                        <Option value="ON">ON</Option>
+                                        <Option value="OFF">OFF</Option>
+                                      </Select>
+                                    </Form.Item>
+
+
+                                    <Form.Item
+                                      name={[subField.name, "evening"]}
+                                      label="Evening"
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please select Mode!",
+                                        },
+                                      ]}
+                                    >
+                                      <Select placeholder="Evening">
+                                        <Option value="ON">ON</Option>
+                                        <Option value="OFF">OFF</Option>
+                                      </Select>
+                                    </Form.Item>
+
+                                    <Form.Item
+                                      name={[subField.name, "night"]}
+                                      label="Night"
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please select Mode!",
+                                        },
+                                      ]}
+                                    >
+                                      <Select placeholder="Night">
+                                        <Option value="ON">ON</Option>
+                                        <Option value="OFF">OFF</Option>
+                                      </Select>
+                                    </Form.Item>
+
+                                    <Form.Item
+                                      // style={{ margin: "0px" }}
+                                      name={[subField.name, "mode"]}
+                                      label="Mode"
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please select Mode!",
+                                        },
+                                      ]}
+                                    >
+                                      <Select placeholder="select your Mode">
+                                        <Option value="cool">Cool</Option>
                                         <Option value="dry">Dry</Option>
                                         <Option value="heat">Heat</Option>
                                         <Option value="frost_protection">
@@ -828,33 +898,33 @@ function PolicyGenerator() {
                                         <Option value="avoid_mode">
                                           Avoid Mould
                                         </Option>
-                                    </Select>
-                                  </Form.Item>
+                                      </Select>
+                                    </Form.Item>
 
-                                  <CloseOutlined
-                                    onClick={() => {
-                                      subOpt.remove(subField.name);
-                                    }}
-                                  />
-                                </Space>
-                              ))}
-                              <Button
-                                type="dashed"
-                                onClick={() => subOpt.add()}
-                                block
-                              >
-                                + Add Sub Rule
-                              </Button>
-                            </div>
-                          )}
-                        </Form.List>
-                      </Form.Item>
+                                    <CloseOutlined
+                                      onClick={() => {
+                                        subOpt.remove(subField.name);
+                                      }}
+                                    />
+                                  </Space>
+                                ))}
+                                <Button
+                                  type="dashed"
+                                  onClick={() => subOpt.add()}
+                                  block
+                                >
+                                  + Add Sub Rule
+                                </Button>
+                              </div>
+                            )}
+                          </Form.List>
+                        </Form.Item>
                       </Card>
                     ))}
 
-                    <Button type="dashed" onClick={() => add()} block>
+                    {/* <Button type="dashed" onClick={() => add()} block>
                       + Add DuctRule
-                    </Button>
+                    </Button> */}
                   </div>
                 )}
               </Form.List>
@@ -890,11 +960,11 @@ function PolicyGenerator() {
                 ]}
               >
                 <Select placeholder="select your Mode">
-                  <Option value="on">On</Option>
-                  <Option value="off">Off</Option>
+                  <Option value="OFF">ON</Option>
+                  <Option value="OFF">OFF</Option>
                 </Select>
               </Form.Item>
-              <Form.List name="fan_coil_rules">
+              <Form.List name="fan_coil_rules" initialValue={ACHumidityPrefilledRules}>
                 {(fields, { add, remove }) => (
                   <div
                     style={{
@@ -920,80 +990,140 @@ function PolicyGenerator() {
                           label="Outside Min:"
                           name={[field.name, "outside_min"]}
                         >
-                          <Input />
+                          <Input disabled/>
                         </Form.Item>
                         <Form.Item
                           label="Outside Max:"
                           name={[field.name, "outside_max"]}
                         >
-                          <Input />
+                          <Input disabled/>
                         </Form.Item>
 
                         {/* Nest Form.List */}
                         <Form.Item label="Sub Rules">
-                        <Form.List name={[field.name, "sub_rules"]}>
-                          {(subFields, subOpt) => (
-                            <div
-                              style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                rowGap: 16,
-                                flexGrow: 1,
-                              }}
-                            >
-                              {subFields.map((subField) => (
-                                <Space key={subField.key}>
-                                  <Form.Item
-                                    name={[subField.name, "inside_min"]}
-                                    label ="Inside Min"
-                                  >
-                                    <InputNumber placeholder="inside_min" />
-                                  </Form.Item>
-                                  <Form.Item
-                                    label ="Inside Max"
-                                    name={[subField.name, "inside_max"]}
-                                  >
-                                    <Input placeholder="inside_max" />
-                                  </Form.Item>
-                                  <Form.Item
-                                    label ="Morning"
-                                    name={[subField.name, "morning"]}
-                                  >
-                                    <InputNumber placeholder="morning" />
-                                  </Form.Item>
-                                  <Form.Item
-                                    label ="Afternoon"
-                                    name={[subField.name, "afternoon"]}
-                                  >
-                                    <InputNumber placeholder="afternoon" />
-                                  </Form.Item>
-                                  <Form.Item
-                                    label ="Evening"
-                                    
-                                    name={[subField.name, "evening"]}
-                                  >
-                                    <Input placeholder="evening" />
-                                  </Form.Item>
+                          <Form.List name={[field.name, "sub_rules"]}>
+                            {(subFields, subOpt) => (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  rowGap: 16,
+                                  flexGrow: 1,
+                                }}
+                              >
+                               {subFields.map((subField) => (
+                                  <Space key={subField.key}>
+                                    <Form.Item
+                                      name={[subField.name, "inside_min"]}
+                                      label="Inside Min"
+                                    >
+                                      <InputNumber placeholder="inside_min" />
+                                    </Form.Item>
+                                    <Form.Item
+                                      label="Inside Max"
+                                      name={[subField.name, "inside_max"]}
+                                    >
+                                      <Input placeholder="inside_max" />
+                                    </Form.Item>
 
-                                  <Form.Item
-                                    label ="Night"
-                                    name={[subField.name, "night"]}
-                                  >
-                                    <Input placeholder="night" />
-                                  </Form.Item>
-                                  <Form.Item
-                                    // style={{ margin: "0px" }}
-                                    name={[subField.name, "mode"]}
-                                    label="Mode"
-                                    rules={[
-                                      {
-                                        required: true,
-                                        message: "Please select Mode!",
-                                      },
-                                    ]}
-                                  >
-                                    <Select placeholder="select your Mode">
-                                    <Option value="cool">Cool</Option>
+                                    <Form.Item
+                                      name={[subField.name, "inside_temp_min"]}
+                                      label="Inside Min Temp"
+                                    >
+                                      <InputNumber placeholder="inside_temp_min" />
+                                    </Form.Item>
+                                    <Form.Item
+                                      label="Inside Max Temp"
+                                      name={[subField.name, "inside_temp_max"]}
+                                    >
+                                      <Input placeholder="inside_temp_max" />
+                                    </Form.Item>
+
+                                    <Form.Item
+                                      name={[subField.name, "morning"]}
+                                      label="Morning"
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please select Mode!",
+                                        },
+                                      ]}
+                                    >
+                                      <Select placeholder="Morning">
+                                        <Option value="ON">ON</Option>
+                                        <Option value="OFF">OFF</Option>
+                                      </Select>
+                                    </Form.Item>
+
+                                    {/* <Form.Item
+                                      label="Morning"
+                                      name={[subField.name, "morning"]}
+                                    >
+                                      <InputNumber placeholder="morning" />
+                                    </Form.Item> */}
+
+                                    <Form.Item
+                                      name={[subField.name, "afternoon"]}
+                                      label="Afternoon"
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please select Mode!",
+                                        },
+                                      ]}
+                                    >
+                                      <Select placeholder="Afternoon">
+                                        <Option value="ON">ON</Option>
+                                        <Option value="OFF">OFF</Option>
+                                      </Select>
+                                    </Form.Item>
+
+
+                                    <Form.Item
+                                      name={[subField.name, "evening"]}
+                                      label="Evening"
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please select Mode!",
+                                        },
+                                      ]}
+                                    >
+                                      <Select placeholder="Evening">
+                                        <Option value="ON">ON</Option>
+                                        <Option value="OFF">OFF</Option>
+                                      </Select>
+                                    </Form.Item>
+
+                                    <Form.Item
+                                      name={[subField.name, "night"]}
+                                      label="Night"
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please select Mode!",
+                                        },
+                                      ]}
+                                    >
+                                      <Select placeholder="Night">
+                                        <Option value="ON">ON</Option>
+                                        <Option value="OFF">OFF</Option>
+                                      </Select>
+                                    </Form.Item>
+
+                                    <Form.Item
+                                      // style={{ margin: "0px" }}
+                                      name={[subField.name, "mode"]}
+                                      label="Mode"
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please select Mode!",
+                                        },
+                                      ]}
+                                    >
+                                      <Select placeholder="select your Mode">
+                                        <Option value="cool">Cool</Option>
                                         <Option value="dry">Dry</Option>
                                         <Option value="heat">Heat</Option>
                                         <Option value="frost_protection">
@@ -1002,27 +1132,27 @@ function PolicyGenerator() {
                                         <Option value="avoid_mode">
                                           Avoid Mould
                                         </Option>
-                                    </Select>
-                                  </Form.Item>
+                                      </Select>
+                                    </Form.Item>
 
-                                  <CloseOutlined
-                                    onClick={() => {
-                                      subOpt.remove(subField.name);
-                                    }}
-                                  />
-                                </Space>
-                              ))}
-                              <Button
-                                type="dashed"
-                                onClick={() => subOpt.add()}
-                                block
-                              >
-                                + Add Sub Rule
-                              </Button>
-                            </div>
-                          )}
-                        </Form.List>
-                      </Form.Item>
+                                    <CloseOutlined
+                                      onClick={() => {
+                                        subOpt.remove(subField.name);
+                                      }}
+                                    />
+                                  </Space>
+                                ))}
+                                <Button
+                                  type="dashed"
+                                  onClick={() => subOpt.add()}
+                                  block
+                                >
+                                  + Add Sub Rule
+                                </Button>
+                              </div>
+                            )}
+                          </Form.List>
+                        </Form.Item>
                       </Card>
                     ))}
 
@@ -1041,7 +1171,7 @@ function PolicyGenerator() {
           <div className="temprature-section">
             <h3>Temperature</h3>
 
-            <Form.List name="radiator_temperature_rules">
+            <Form.List name="radiator_temperature_rules" initialValue={radiatorTemperaturePrefilledRules}>
               {(fields, { add, remove }) => (
                 <div
                   style={{
@@ -1055,29 +1185,29 @@ function PolicyGenerator() {
                       size="large"
                       title={`Rule ${field.name + 1}`}
                       key={field.key}
-                      extra={
-                        <CloseOutlined
-                          onClick={() => {
-                            remove(field.name);
-                          }}
-                        />
-                      }
+                      // extra={
+                      //   <CloseOutlined
+                      //     onClick={() => {
+                      //       remove(field.name);
+                      //     }}
+                      //   />
+                      // }
                     >
                       <Form.Item
                         label="Outside Min:"
                         name={[field.name, "outside_min"]}
                       >
-                        <InputNumber defaultValue={-22} />
+                        <InputNumber disabled/>
                       </Form.Item>
                       <Form.Item
                         label="Outside Max:"
                         name={[field.name, "outside_max"]}
                       >
-                        <InputNumber />
+                        <InputNumber disabled />
                       </Form.Item>
 
-                    {/* NESTED RULES (SUB RULES) */}
-                    <Form.Item label="Sub Rules">
+                      {/* NESTED RULES (SUB RULES) */}
+                      <Form.Item label="Sub Rules">
                         <Form.List name={[field.name, "sub_rules"]}>
                           {(subFields, subOpt) => (
                             <div
@@ -1092,42 +1222,91 @@ function PolicyGenerator() {
                                 <Space key={subField.key}>
                                   <Form.Item
                                     name={[subField.name, "inside_min"]}
-                                    label ="Inside Min"
+                                    label="Inside Min"
                                   >
                                     <InputNumber placeholder="inside_min" />
                                   </Form.Item>
                                   <Form.Item
-                                    label ="Inside Max"
+                                    label="Inside Max"
                                     name={[subField.name, "inside_max"]}
                                   >
                                     <Input placeholder="inside_max" />
                                   </Form.Item>
                                   <Form.Item
-                                    label ="Morning"
-                                    name={[subField.name, "morning"]}
-                                  >
-                                    <InputNumber placeholder="morning" />
-                                  </Form.Item>
-                                  <Form.Item
-                                    label ="Afternoon"
-                                    name={[subField.name, "afternoon"]}
-                                  >
-                                    <InputNumber placeholder="afternoon" />
-                                  </Form.Item>
-                                  <Form.Item
-                                    label ="Evening"
-                                    
-                                    name={[subField.name, "evening"]}
-                                  >
-                                    <Input placeholder="evening" />
-                                  </Form.Item>
+                                      name={[subField.name, "morning"]}
+                                      label="Morning"
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please select Mode!",
+                                        },
+                                      ]}
+                                    >
+                                      <Select placeholder="Morning">
+                                      {optionsArray.map((item, index) => (
+                                      <Option key={index} value={item.value}>
+                                        {item.label}
+                                        </Option>
+                                        ))}
+                                      </Select>
+                                    </Form.Item>
+                                    <Form.Item
+                                      name={[subField.name, "afternoon"]}
+                                      label="Afternoon"
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please select Mode!",
+                                        },
+                                      ]}
+                                    >
+                                      <Select placeholder="Afternoon">
+                                      {optionsArray.map((item, index) => (
+                                      <Option key={index} value={item.value}>
+                                        {item.label}
+                                        </Option>
+                                        ))}
+                                      </Select>
+                                    </Form.Item>
 
-                                  <Form.Item
-                                    label ="Night"
-                                    name={[subField.name, "night"]}
-                                  >
-                                    <Input placeholder="night" />
-                                  </Form.Item>
+
+                                    <Form.Item
+                                      name={[subField.name, "evening"]}
+                                      label="Evening"
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please select Mode!",
+                                        },
+                                      ]}
+                                    >
+                                      <Select placeholder="Evening">
+                                      {optionsArray.map((item, index) => (
+                                      <Option key={index} value={item.value}>
+                                        {item.label}
+                                        </Option>
+                                        ))}
+                                      </Select>
+                                    </Form.Item>
+
+                                    <Form.Item
+                                      name={[subField.name, "night"]}
+                                      label="Night"
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please select Mode!",
+                                        },
+                                      ]}
+                                    >
+                                      <Select placeholder="Night">
+                                      {optionsArray.map((item, index) => (
+                                      <Option key={index} value={item.value}>
+                                        {item.label}
+                                        </Option>
+                                        ))}
+                                      </Select>
+                                    </Form.Item>
                                   <Form.Item
                                     // style={{ margin: "0px" }}
                                     name={[subField.name, "mode"]}
@@ -1140,15 +1319,15 @@ function PolicyGenerator() {
                                     ]}
                                   >
                                     <Select placeholder="select your Mode">
-                                    <Option value="cool">Cool</Option>
-                                        <Option value="dry">Dry</Option>
-                                        <Option value="heat">Heat</Option>
-                                        <Option value="frost_protection">
-                                          Frost Protection
-                                        </Option>
-                                        <Option value="avoid_mode">
-                                          Avoid Mould
-                                        </Option>
+                                      <Option value="cool">Cool</Option>
+                                      <Option value="dry">Dry</Option>
+                                      <Option value="heat">Heat</Option>
+                                      <Option value="frost_protection">
+                                        Frost Protection
+                                      </Option>
+                                      <Option value="avoid_mode">
+                                        Avoid Mould
+                                      </Option>
                                     </Select>
                                   </Form.Item>
 
@@ -1173,9 +1352,9 @@ function PolicyGenerator() {
                     </Card>
                   ))}
 
-                  <Button type="dashed" onClick={() => add()} block>
+                  {/* <Button type="dashed" onClick={() => add()} block>
                     + Add Radiator Temperature Rule
-                  </Button>
+                  </Button> */}
                 </div>
               )}
             </Form.List>
